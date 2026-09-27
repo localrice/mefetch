@@ -89,7 +89,7 @@ func main() {
 
 	for _, item := range config {
 		// to remove the ascii key from the output
-		if item.Key == "ascii" {
+		if item.Key == "ascii" || item.Key == "text-color" {
 			continue
 		}
 
