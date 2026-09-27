@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 
 	"charm.land/lipgloss/v2"
@@ -53,6 +54,24 @@ ascii: true
 	return nil
 }
 
+func openConfig() error {
+	configPath := os.Getenv("HOME") + "/.config/mefetch/config.yaml"
+
+	editor := os.Getenv("EDITOR")
+
+	if editor == "" {
+		editor = "nano"
+	}
+
+	cmd := exec.Command(editor, configPath)
+
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	return cmd.Run()
+}
+
 func loadASCII(config yaml.MapSlice) (string, error) {
 	for _, item := range config {
 		if item.Key == "ascii" {
@@ -87,17 +106,29 @@ func loadColor(config yaml.MapSlice) (string, error) {
 }
 
 func main() {
-	fmt.Println(os.Args)
-	if len(os.Args) > 1 && os.Args[1] == "init" {
-		err := initConfig()
+	if len(os.Args) > 1 {
 
-		if err != nil {
-			fmt.Println("Error initializing mefetch:", err)
+		if os.Args[1] == "init" {
+			err := initConfig()
+
+			if err != nil {
+				fmt.Println("Error initializing mefetch:", err)
+				return
+			}
+
+			fmt.Println("mefetch initialized successfully.")
 			return
 		}
 
-		fmt.Println("mefetch initialized successfully.")
-		return
+		if os.Args[1] == "config" {
+			err := openConfig()
+
+			if err != nil {
+				fmt.Println("Error opening config:", err)
+			}
+
+			return
+		}
 	}
 
 	path := os.Getenv("HOME") + "/.config/mefetch/config.yaml"
