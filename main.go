@@ -38,4 +38,15 @@ func main() {
 		fmt.Printf("%d. %v >  %v\n", i+1, item.Key, item.Value)
 	}
 
+	labelStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#4ba3f5")).
+		Bold(true)
+
+	for _, item := range config {
+		fmt.Printf(
+			"%s > %v\n",
+			labelStyle.Render(fmt.Sprintf("%-10s", item.Key)),
+			item.Value,
+		)
+	}
 }
