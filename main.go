@@ -1,6 +1,12 @@
 package main
 
-import "charm.land/lipgloss/v2"
+import (
+	"fmt"
+	"os"
+
+	"charm.land/lipgloss/v2"
+	"github.com/goccy/go-yaml"
+)
 
 func main() {
 	style := lipgloss.NewStyle().
@@ -12,4 +18,24 @@ func main() {
 		Width(22)
 
 	lipgloss.Println(style.Render(" welcome to ricefield org"))
+
+	path := os.Getenv("HOME") + "/.config/mefetch/config.yaml"
+	data, err := os.ReadFile(path)
+	if err != nil {
+		fmt.Println("Error reading file", err)
+		return
+	}
+
+	var config yaml.MapSlice
+
+	err = yaml.Unmarshal(data, &config)
+	if err != nil {
+		fmt.Println("Error unmarshalling YAML", err)
+		return
+	}
+
+	for i, item := range config {
+		fmt.Printf("%d. %v >  %v\n", i+1, item.Key, item.Value)
+	}
+
 }
