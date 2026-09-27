@@ -9,6 +9,27 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
+func loadASCII(config yaml.MapSlice) (string, error) {
+	for _, item := range config {
+		if item.Key == "ascii" {
+			if item.Value == true {
+				path := os.Getenv("HOME") + "/.config/mefetch/ascii.txt"
+
+				data, err := os.ReadFile(path)
+				if err != nil {
+					return "", err
+				}
+
+				return string(data), nil
+			}
+
+			return "", nil
+		}
+
+	}
+	return "", nil
+}
+
 func main() {
 	path := os.Getenv("HOME") + "/.config/mefetch/config.yaml"
 	data, err := os.ReadFile(path)
@@ -34,25 +55,15 @@ func main() {
 		Border(lipgloss.RoundedBorder()).
 		Padding(1, 2)
 
+	asciiArt, err := loadASCII(config)
+	if err != nil {
+		fmt.Println("Error reading ascii.txt:", err)
+		return
+	}
+
 	var content strings.Builder
-	var asciiArt string
 
 	for _, item := range config {
-		if item.Key == "ascii" {
-			if item.Value == true {
-				path := os.Getenv("HOME") + "/.config/mefetch/ascii.txt"
-
-				data, err := os.ReadFile(path)
-				if err != nil {
-					fmt.Println("Error reading ascii.txt", err)
-					return
-				}
-
-				asciiArt = string(data)
-			}
-
-			continue
-		}
 
 		label := fmt.Sprintf("%-10s", item.Key)
 		styledLabel := labelStyle.Render(label)
