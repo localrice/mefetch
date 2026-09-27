@@ -20,6 +20,10 @@ func initConfig() error {
 	configPath := configDir + "/config.yaml"
 	asciiPath := configDir + "/ascii.txt"
 
+	if _, err := os.Stat(configPath); err == nil {
+		return fmt.Errorf("mefetch is already initialized")
+	}
+
 	config := `name: Your Name
 location: Your Location
 interests: Your Interests
