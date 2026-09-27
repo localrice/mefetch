@@ -53,7 +53,10 @@ func main() {
 
 	boxStyle := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
-		Padding(1, 2)
+		Padding(1, 1)
+
+	asciiStyle := lipgloss.NewStyle().
+		PaddingRight(5)
 
 	asciiArt, err := loadASCII(config)
 	if err != nil {
@@ -61,9 +64,14 @@ func main() {
 		return
 	}
 
+	ascii := asciiStyle.Render(asciiArt)
+
 	var content strings.Builder
 
 	for _, item := range config {
+		if item.Key == "ascii" {
+			continue
+		}
 
 		label := fmt.Sprintf("%-10s", item.Key)
 		styledLabel := labelStyle.Render(label)
@@ -71,6 +79,18 @@ func main() {
 		fmt.Fprintf(&content, "%s > %v\n", styledLabel, item.Value)
 	}
 
-	fmt.Println(asciiArt)
-	fmt.Println(boxStyle.Render(content.String()))
+	// fmt.Println(asciiArt)
+	// fmt.Println(boxStyle.Render(content.String()))
+	profile := content.String()
+
+	output := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		ascii,
+		profile,
+	)
+
+	output = boxStyle.Render(output)
+
+	fmt.Println(output)
+
 }
