@@ -30,6 +30,18 @@ func loadASCII(config yaml.MapSlice) (string, error) {
 	return "", nil
 }
 
+// do not use anything other than color in the text-color field, as it will defualt to the usual white
+// this function does not have any color validation
+// only supports hex or ANSI256 value
+func loadColor(config yaml.MapSlice) (string, error) {
+	for _, item := range config {
+		if item.Key == "text-color" {
+			return fmt.Sprintf("%v", item.Value), nil
+		}
+	}
+	return "#4ba3f5", nil
+}
+
 func main() {
 	path := os.Getenv("HOME") + "/.config/mefetch/config.yaml"
 	data, err := os.ReadFile(path)
@@ -46,9 +58,15 @@ func main() {
 		return
 	}
 
+	color, err := loadColor(config)
+	if err != nil {
+		fmt.Println("Error loading color:", err)
+		return
+	}
+
 	// styling definitions
 	labelStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#4ba3f5")).
+		Foreground(lipgloss.Color(color)).
 		Bold(true)
 
 	boxStyle := lipgloss.NewStyle().
@@ -58,6 +76,7 @@ func main() {
 	asciiStyle := lipgloss.NewStyle().
 		PaddingRight(5)
 
+	// load ascii art from ascii.txt if the ascii key is set to true in config.yaml
 	asciiArt, err := loadASCII(config)
 	if err != nil {
 		fmt.Println("Error reading ascii.txt:", err)
@@ -69,6 +88,7 @@ func main() {
 	var content strings.Builder
 
 	for _, item := range config {
+		// to remove the ascii key from the output
 		if item.Key == "ascii" {
 			continue
 		}
