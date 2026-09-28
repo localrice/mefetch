@@ -10,16 +10,17 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-func initConfig() error {
-	configDir := os.Getenv("HOME") + "/.config/mefetch"
+var (
+	configDir  = os.Getenv("HOME") + "/.config/mefetch"
+	configPath = configDir + "/config.yaml"
+	asciiPath  = configDir + "/ascii.txt"
+)
 
+func initConfig() error {
 	err := os.MkdirAll(configDir, 0755)
 	if err != nil {
 		return err
 	}
-
-	configPath := configDir + "/config.yaml"
-	asciiPath := configDir + "/ascii.txt"
 
 	if _, err := os.Stat(configPath); err == nil {
 		return fmt.Errorf("mefetch is already initialized")
@@ -55,8 +56,6 @@ ascii: true
 }
 
 func openConfig() error {
-	configPath := os.Getenv("HOME") + "/.config/mefetch/config.yaml"
-
 	editor := os.Getenv("EDITOR")
 
 	if editor == "" {
@@ -76,9 +75,7 @@ func loadASCII(config yaml.MapSlice) (string, error) {
 	for _, item := range config {
 		if item.Key == "ascii" {
 			if item.Value == true {
-				path := os.Getenv("HOME") + "/.config/mefetch/ascii.txt"
-
-				data, err := os.ReadFile(path)
+				data, err := os.ReadFile(asciiPath)
 				if err != nil {
 					return "", err
 				}
@@ -131,12 +128,12 @@ func main() {
 		}
 	}
 
-	path := os.Getenv("HOME") + "/.config/mefetch/config.yaml"
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(configPath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Println("mefetch is not initialized.")
 			fmt.Println("run 'mefetch init' to create the default configuration")
+			return
 		}
 		fmt.Println("Error reading file", err)
 		return
