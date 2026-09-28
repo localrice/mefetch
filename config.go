@@ -99,3 +99,19 @@ func loadColor(config yaml.MapSlice) (string, error) {
 	}
 	return "#4ba3f5", nil
 }
+
+func loadConfig() (yaml.MapSlice, error) {
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		return nil, err
+	}
+
+	var config yaml.MapSlice
+
+	err = yaml.Unmarshal(data, &config)
+	if err != nil {
+		fmt.Println("Error unmarshalling YAML", err)
+		return nil, err
+	}
+	return config, nil
+}

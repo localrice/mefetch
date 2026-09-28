@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"charm.land/lipgloss/v2"
-	"github.com/goccy/go-yaml"
 )
 
 func main() {
@@ -37,7 +36,7 @@ func main() {
 		}
 	}
 
-	data, err := os.ReadFile(configPath)
+	config, err := loadConfig()
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Println("mefetch is not initialized.")
@@ -45,14 +44,6 @@ func main() {
 			return
 		}
 		fmt.Println("Error reading file", err)
-		return
-	}
-
-	var config yaml.MapSlice
-
-	err = yaml.Unmarshal(data, &config)
-	if err != nil {
-		fmt.Println("Error unmarshalling YAML", err)
 		return
 	}
 
