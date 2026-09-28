@@ -10,8 +10,9 @@ import (
 )
 
 func main() {
+	// cli handling
 	if len(os.Args) > 1 {
-
+		// mefetch init
 		if os.Args[1] == "init" {
 			err := initConfig()
 
@@ -23,7 +24,8 @@ func main() {
 			fmt.Println("mefetch initialized successfully.")
 			return
 		}
-
+		// mefetch config
+		// opens ~/.config/mefetch/config.yaml file in text editor
 		if os.Args[1] == "config" {
 			err := openConfig()
 
