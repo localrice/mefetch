@@ -97,6 +97,7 @@ func loadColor(config yaml.MapSlice) (string, error) {
 			return fmt.Sprintf("%v", item.Value), nil
 		}
 	}
+	// default color if nothing is set in the config.yaml file
 	return "#4ba3f5", nil
 }
 
