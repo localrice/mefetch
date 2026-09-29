@@ -25,12 +25,12 @@ func initConfig() error {
 	if _, err := os.Stat(configPath); err == nil {
 		return fmt.Errorf("mefetch is already initialized")
 	}
-
-	config := `name: Your Name
-location: Your Location
-interests: Your Interests
-
+	config := `name: auto
+location: auto
+bio: auto
+blog: auto
 github: your-github
+interests: cats
 discord: your-discord
 
 text-color: "#4ba3f5"
