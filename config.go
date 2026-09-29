@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"os/exec"
 
@@ -115,4 +117,27 @@ func loadConfig() (yaml.MapSlice, error) {
 		return nil, err
 	}
 	return config, nil
+}
+
+func loadGitHubProfile(username string) (map[string]interface{}, error) {
+	url := "https://api.github.com/users/" + username
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("GitHub API returned status %s", resp.Status)
+	}
+
+	var github_profile map[string]interface{}
+
+	err = json.NewDecoder(resp.Body).Decode(&github_profile)
+	if err != nil {
+		return nil, err
+	}
+
+	return github_profile, nil
 }
