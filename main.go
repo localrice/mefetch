@@ -47,6 +47,33 @@ func main() {
 		return
 	}
 
+	var github_profile map[string]interface{}
+	githubConfigured := false
+
+	for _, item := range config {
+		if item.Key == "github" {
+			username := fmt.Sprintf("%v", item.Value)
+			fmt.Println(username)
+			if username == "" {
+				fmt.Println("GitHub username is not set in config.yaml")
+				return
+			}
+			githubConfigured = true
+			github_profile, err = loadGitHubProfile(username)
+			if err != nil {
+				fmt.Println("Error loading GitHub profile:", err)
+				return
+			}
+
+			break
+		}
+	}
+
+	if !githubConfigured {
+		fmt.Println("GitHub username is not set in config.yaml")
+		return
+	}
+
 	color, err := loadColor(config)
 	if err != nil {
 		fmt.Println("Error loading color:", err)
@@ -74,6 +101,7 @@ func main() {
 
 	ascii := asciiStyle.Render(asciiArt)
 
+	// profile extraction loop
 	var content strings.Builder
 
 	for _, item := range config {
@@ -82,10 +110,22 @@ func main() {
 			continue
 		}
 
+		value := item.Value
+		// we had use interface so it needs a string specficially
+		key := item.Key.(string)
+		if value == "auto" {
+			githubValue, exists := github_profile[key]
+
+			if !exists || githubValue == nil {
+				continue
+			}
+
+			value = githubValue
+		}
 		label := fmt.Sprintf("%-10s", item.Key)
 		styledLabel := labelStyle.Render(label)
 
-		fmt.Fprintf(&content, "%s > %v\n", styledLabel, item.Value)
+		fmt.Fprintf(&content, "%s > %v\n", styledLabel, value)
 	}
 
 	// fmt.Println(asciiArt)
