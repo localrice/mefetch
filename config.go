@@ -128,10 +128,13 @@ func loadGitHubProfile(username string) (map[string]interface{}, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == http.StatusNotFound {
+		return nil, fmt.Errorf("GitHub username not found")
+	}
+
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("GitHub API returned status %s", resp.Status)
 	}
-
 	var github_profile map[string]interface{}
 
 	err = json.NewDecoder(resp.Body).Decode(&github_profile)
