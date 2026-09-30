@@ -28,10 +28,8 @@ func initConfig() error {
 	config := `name: auto
 location: auto
 bio: auto
-blog: auto
 github: your-github
 interests: cats
-discord: your-discord
 
 text-color: "#B46A72"
 ascii: true
