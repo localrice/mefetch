@@ -6,6 +6,10 @@
 
 A fetching tool to display your personal profile and information from GitHub.
 
+<p align="center">
+    <img src="./docs/images/mefetch.png" alt="mefetch" border="0">
+</p>
+
 ## Configuration
 
 Initialize the configuration:
