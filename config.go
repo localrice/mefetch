@@ -33,7 +33,7 @@ github: your-github
 interests: cats
 discord: your-discord
 
-text-color: "#4ba3f5"
+text-color: "#B46A72"
 ascii: true
 `
 
